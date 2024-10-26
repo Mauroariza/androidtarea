@@ -12,9 +12,11 @@ fun AplicacionTheme(
 ) {
     val colors = if (useDarkTheme) {
         darkColorScheme(
-            primary = Purple80,
-            secondary = PurpleGrey80,
-            tertiary = Pink80
+            primary = DarkPrimary,
+            secondary = DarkSecondary,
+            background = DarkBackground,
+            surface = DarkSurface,
+            error = DarkError
         )
     } else {
         lightColorScheme(

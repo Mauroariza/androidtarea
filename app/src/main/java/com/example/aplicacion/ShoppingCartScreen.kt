@@ -1,3 +1,4 @@
+// ShoppingCartScreen.kt
 package com.example.aplicacion
 
 import androidx.compose.foundation.Image
@@ -7,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -17,7 +19,7 @@ data class CartItem(val id: Int, val name: String, val price: Double, val imageU
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShoppingCartScreen(cartItems: List<CartItem>, onBackClick: () -> Unit, onRemoveFromCart: (CartItem) -> Unit) {
+fun ShoppingCartScreen(cartItems: List<CartItem>, onBackClick: () -> Unit, onRemoveFromCart: (CartItem) -> Unit, onThemeChange: (Boolean) -> Unit, useDarkTheme: Boolean) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -25,6 +27,14 @@ fun ShoppingCartScreen(cartItems: List<CartItem>, onBackClick: () -> Unit, onRem
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Atrás")
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { onThemeChange(!useDarkTheme) }) {
+                        Icon(
+                            imageVector = Icons.Filled.Face,
+                            contentDescription = "Cambiar Tema"
+                        )
                     }
                 }
             )

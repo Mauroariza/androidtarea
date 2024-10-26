@@ -1,3 +1,4 @@
+// ProductListScreen.kt
 package com.example.aplicacion
 
 import androidx.compose.foundation.Image
@@ -6,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -21,13 +23,15 @@ fun ProductListScreen(
     onAddToCart: (Product) -> Unit,
     onBackClick: () -> Unit,
     cartItemCount: Int,
-    onCartClick: () -> Unit
+    onCartClick: () -> Unit,
+    onThemeChange: (Boolean) -> Unit,
+    useDarkTheme: Boolean
 ) {
     val products = remember {
         listOf(
-            Product(1, "Producto 1", 19.99, "https://acortar.link/x2do5E"),
-            Product(2, "Producto 2", 29.99, "https://acortar.link/x2do5E"),
-            Product(3, "Producto 3", 9.99, "https://acortar.link/x2do5E")
+            Product(1, "Manzana", 19.99, "https://acortar.link/x2do5E"),
+            Product(2, "Fresa", 29.99, "https://acortar.link/jnABfG"),
+            Product(3, "Pera", 9.99, "https://acortar.link/CrYvaV")
         )
     }
 
@@ -50,6 +54,12 @@ fun ProductListScreen(
                             Icon(Icons.Filled.ShoppingCart, contentDescription = "Carrito")
                         }
                     }
+                    IconButton(onClick = { onThemeChange(!useDarkTheme) }) {
+                        Icon(
+                            imageVector = Icons.Filled.Face,
+                            contentDescription = "Cambiar Tema"
+                        )
+                    }
                 }
             )
         }
@@ -64,27 +74,19 @@ fun ProductListScreen(
 
 @Composable
 fun ProductRow(product: Product, onAddToCart: (Product) -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
+    Row(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
         Image(
-            painter = rememberAsyncImagePainter(model = product.imageUrl),
+            painter = rememberAsyncImagePainter(product.imageUrl),
             contentDescription = product.name,
             modifier = Modifier.size(64.dp)
         )
-
-        Spacer(modifier = Modifier.width(16.dp))
-
+        Spacer(modifier = Modifier.width(8.dp))
         Column(modifier = Modifier.weight(1f)) {
-            Text(product.name, style = MaterialTheme.typography.bodyLarge)
-            Text("Precio: \$${product.price}", style = MaterialTheme.typography.bodyMedium)
+            Text(text = product.name, style = MaterialTheme.typography.titleMedium)
+            Text(text = "$${product.price}", style = MaterialTheme.typography.bodyMedium)
         }
-
-        Button(onClick = { onAddToCart(product) }) {
-            Text("Agregar al Carrito")
+        IconButton(onClick = { onAddToCart(product) }) {
+            Icon(Icons.Filled.ShoppingCart, contentDescription = "Add to cart")
         }
     }
 }
