@@ -3,21 +3,15 @@ package com.example.aplicacion
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-
-sealed class Screen(val route: String, val icon: ImageVector, val title: String) {
-    object Profile : Screen("profile", Icons.Filled.Person, "Profile")
-    object Settings : Screen("settings", Icons.Filled.Settings, "Settings")
-}
-
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExitToApp
 @Composable
-fun BottomNavigationBar(navController: NavHostController) {
+fun LoggedOutBottomNavigationBar(navController: NavHostController) {
     val items = listOf(
-        Screen.Profile,
-        Screen.Settings
+        Screen.Login,
+        Screen.Register
     )
     NavigationBar {
         val navBackStackEntry = navController.currentBackStackEntryAsState().value
@@ -36,5 +30,38 @@ fun BottomNavigationBar(navController: NavHostController) {
                 }
             )
         }
+    }
+}
+
+@Composable
+fun LoggedInBottomNavigationBar(navController: NavHostController, onLogout: () -> Unit) {
+    val items = listOf(
+        Screen.Profile,
+        Screen.Settings,
+        Screen.ShoppingCart
+    )
+    NavigationBar {
+        val navBackStackEntry = navController.currentBackStackEntryAsState().value
+        val currentRoute = navBackStackEntry?.destination?.route
+        items.forEach { screen ->
+            NavigationBarItem(
+                icon = { Icon(screen.icon, contentDescription = screen.title) },
+                label = { Text(screen.title) },
+                selected = currentRoute == screen.route,
+                onClick = {
+                    navController.navigate(screen.route) {
+                        popUpTo(navController.graph.startDestinationId) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            )
+        }
+        NavigationBarItem(
+            icon = { Icon(Icons.Filled.ExitToApp, contentDescription = "Logout") },
+            label = { Text("Logout") },
+            selected = false,
+            onClick = onLogout
+        )
     }
 }

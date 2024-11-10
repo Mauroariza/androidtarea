@@ -1,4 +1,3 @@
-// ProductListScreen.kt
 package com.example.aplicacion
 
 import androidx.compose.foundation.Image

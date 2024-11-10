@@ -1,4 +1,3 @@
-// ShoppingCartScreen.kt
 package com.example.aplicacion
 
 import androidx.compose.foundation.Image
@@ -9,17 +8,24 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 
-data class CartItem(val id: Int, val name: String, val price: Double, val imageUrl: String)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShoppingCartScreen(cartItems: List<CartItem>, onBackClick: () -> Unit, onRemoveFromCart: (CartItem) -> Unit, onThemeChange: (Boolean) -> Unit, useDarkTheme: Boolean) {
+fun ShoppingCartScreen(
+    cartItems: List<CartItem>,
+    onBackClick: () -> Unit,
+    onRemoveFromCart: (CartItem) -> Unit,
+    onUpdateQuantity: (CartItem, Int) -> Unit,
+    onThemeChange: (Boolean) -> Unit,
+    useDarkTheme: Boolean
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -43,16 +49,16 @@ fun ShoppingCartScreen(cartItems: List<CartItem>, onBackClick: () -> Unit, onRem
         Column(modifier = Modifier.padding(padding)) {
             LazyColumn(modifier = Modifier.weight(1f)) {
                 items(cartItems) { item ->
-                    CartItemRow(item = item, onRemove = { onRemoveFromCart(item) })
+                    CartItemRow(item = item, onRemove = { onRemoveFromCart(item) }, onUpdateQuantity = onUpdateQuantity)
                 }
             }
-            CheckoutSection(total = cartItems.sumOf { it.price })
+            CheckoutSection(total = cartItems.sumOf { it.price * it.quantity })
         }
     }
 }
 
 @Composable
-fun CartItemRow(item: CartItem, onRemove: () -> Unit) {
+fun CartItemRow(item: CartItem, onRemove: () -> Unit, onUpdateQuantity: (CartItem, Int) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -70,6 +76,15 @@ fun CartItemRow(item: CartItem, onRemove: () -> Unit) {
         Column(modifier = Modifier.weight(1f)) {
             Text(item.name, style = MaterialTheme.typography.bodyLarge)
             Text("Precio: \$${item.price}", style = MaterialTheme.typography.bodyMedium)
+            Row {
+                IconButton(onClick = { if (item.quantity > 1) onUpdateQuantity(item, item.quantity - 1) }) {
+                    Icon(Icons.Filled.Delete, contentDescription = "Decrease quantity")
+                }
+                Text("${item.quantity}", style = MaterialTheme.typography.bodyMedium)
+                IconButton(onClick = { onUpdateQuantity(item, item.quantity + 1) }) {
+                    Icon(Icons.Filled.Add, contentDescription = "Increase quantity")
+                }
+            }
         }
 
         IconButton(onClick = onRemove) {
