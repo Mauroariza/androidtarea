@@ -1,7 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.gms.google-services")
 }
+
 
 android {
     namespace = "com.example.aplicacion"
@@ -50,6 +52,13 @@ android {
 }
 
 dependencies {
+
+    // Firebase Authenticatio
+    implementation("com.google.firebase:firebase-auth-ktx")
+    // Google Sign-In
+    implementation("com.google.android.gms:play-services-auth")
+    implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
+    implementation("com.google.firebase:firebase-analytics")
     implementation(libs.maps.compose)
     implementation(libs.play.services.location)
     implementation(libs.play.services.maps)
@@ -64,6 +73,8 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
+    // Remove the following line
+    // implementation(libs.firebase.auth.common)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

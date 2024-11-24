@@ -1,5 +1,4 @@
 package com.example.aplicacion
-
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -7,27 +6,30 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.example.aplicacion.ui.theme.AplicacionTheme
 import com.google.android.gms.maps.model.LatLng
 
+// MainActivity.kt
 class MainActivity : ComponentActivity() {
     private val profileViewModel: ProfileViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            var useDarkTheme by rememberSaveable { mutableStateOf(false) }
-            var cartItems by rememberSaveable { mutableStateOf(listOf<CartItem>()) }
-            var isLoggedIn by rememberSaveable { mutableStateOf(false) }
+            var useDarkTheme: Boolean by rememberSaveable { mutableStateOf(false) }
+            var cartItems: List<CartItem> by rememberSaveable { mutableStateOf(listOf()) }
+            var isLoggedIn: Boolean by rememberSaveable { mutableStateOf(false) }
             AplicacionTheme(useDarkTheme = useDarkTheme) {
-                val navController = rememberNavController()
+                val navController: NavHostController = rememberNavController()
                 Scaffold(
                     bottomBar = {
                         if (isLoggedIn) {
@@ -41,7 +43,7 @@ class MainActivity : ComponentActivity() {
                             LoggedOutBottomNavigationBar(navController = navController)
                         }
                     }
-                ) { paddingValues ->
+                ) { paddingValues: PaddingValues ->
                     NavHost(navController = navController, startDestination = "login", modifier = Modifier.padding(paddingValues)) {
                         composable("login") {
                             LoginScreen(onLoginSuccess = {
@@ -55,8 +57,8 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("product_list") {
                             ProductListScreen(
-                                onAddToCart = { product ->
-                                    val existingItem = cartItems.find { it.id == product.id }
+                                onAddToCart = { product: Product ->
+                                    val existingItem: CartItem? = cartItems.find { it.id == product.id }
                                     if (existingItem != null) {
                                         cartItems = cartItems.map {
                                             if (it.id == product.id) it.copy(quantity = it.quantity + 1) else it
@@ -76,10 +78,10 @@ class MainActivity : ComponentActivity() {
                             ShoppingCartScreen(
                                 cartItems = cartItems,
                                 onBackClick = { navController.popBackStack() },
-                                onRemoveFromCart = { cartItem ->
+                                onRemoveFromCart = { cartItem: CartItem ->
                                     cartItems = cartItems.filter { it.id != cartItem.id }
                                 },
-                                onUpdateQuantity = { cartItem, newQuantity ->
+                                onUpdateQuantity = { cartItem: CartItem, newQuantity: Int ->
                                     cartItems = cartItems.map {
                                         if (it.id == cartItem.id) it.copy(quantity = newQuantity) else it
                                     }
@@ -90,7 +92,10 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("register") {
                             RegisterScreen(onRegisterSuccess = {
-                                navController.navigate("login")
+                                isLoggedIn = true
+                                navController.navigate("product_list") {
+                                    popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                                }
                             }, onThemeChange = { useDarkTheme = it }, useDarkTheme = useDarkTheme)
                         }
                         composable("profile") {
@@ -101,7 +106,7 @@ class MainActivity : ComponentActivity() {
                                 onBackClick = { navController.popBackStack() },
                                 onThemeChange = { useDarkTheme = it },
                                 useDarkTheme = useDarkTheme,
-                                onMapClick = { location ->
+                                onMapClick = { location: LatLng ->
                                     navController.navigate("map/${location.latitude},${location.longitude}")
                                 }
                             )
@@ -110,9 +115,9 @@ class MainActivity : ComponentActivity() {
                             LocationScreen()
                         }
                         composable("map/{initialLocationLat},{initialLocationLng}") { backStackEntry ->
-                            val initialLocation = backStackEntry.arguments?.let {
-                                val lat = it.getString("initialLocationLat")?.toDoubleOrNull() ?: 0.0
-                                val lng = it.getString("initialLocationLng")?.toDoubleOrNull() ?: 0.0
+                            val initialLocation: LatLng = backStackEntry.arguments?.let {
+                                val lat: Double = it.getString("initialLocationLat")?.toDoubleOrNull() ?: 0.0
+                                val lng: Double = it.getString("initialLocationLng")?.toDoubleOrNull() ?: 0.0
                                 LatLng(lat, lng)
                             } ?: LatLng(0.0, 0.0)
                             MapScreen(initialLocation = initialLocation)

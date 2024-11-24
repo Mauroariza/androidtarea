@@ -1,5 +1,5 @@
 [versions]
-agp = "8.6.0"
+agp = "8.7.2"
 coilCompose = "2.4.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
@@ -13,8 +13,11 @@ navigationCompose = "2.8.3"
 playServicesLocation = "21.0.1"
 playServicesMaps = "18.0.2"
 mapsCompose = "2.1.0"
+firebaseAuthCommon = "9.8.0"
+playServicesAuth = "20.2.0"
 
 [libraries]
+play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 maps-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "mapsCompose" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
@@ -34,6 +37,7 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+firebase-auth-common = { group = "com.google.firebase", name = "firebase-auth-common", version.ref = "firebaseAuthCommon" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
