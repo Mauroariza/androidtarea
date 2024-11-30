@@ -1,5 +1,5 @@
 // SettingsScreen.kt
-package com.example.aplicacion
+package com.example.aplicacion.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -44,24 +44,7 @@ fun SettingsScreen(
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Configuraciones") },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Atrás")
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { onThemeChange(!useDarkTheme) }) {
-                        Icon(
-                            imageVector = Icons.Filled.Face,
-                            contentDescription = "Cambiar Tema"
-                        )
-                    }
-                }
-            )
-        }
+
     ) { padding ->
         Column(
             modifier = Modifier

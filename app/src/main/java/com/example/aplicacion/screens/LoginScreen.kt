@@ -1,6 +1,5 @@
-package com.example.aplicacion
+package com.example.aplicacion.screens
 
-import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -19,11 +18,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import androidx.compose.ui.layout.ContentScale
+
+import android.util.Log
+import com.example.aplicacion.R
+import com.example.aplicacion.viewmodel.SharedViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,7 +34,8 @@ fun LoginScreen(
     onLoginSuccess: () -> Unit,
     onRegisterClick: () -> Unit,
     onThemeChange: (Boolean) -> Unit,
-    useDarkTheme: Boolean
+    useDarkTheme: Boolean,
+
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -42,43 +46,34 @@ fun LoginScreen(
 
     // Configure Google Sign-In
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestIdToken("YOUR_WEB_CLIENT_ID") // Replace with your actual client ID
+        .requestIdToken("899728414342-kbl8rip7nfel92ini44itg1t8ivd4oak.apps.googleusercontent.com")
         .requestEmail()
         .build()
 
     val googleSignInClient = GoogleSignIn.getClient(context, gso)
-   val googleSignInLauncher = rememberLauncherForActivityResult(
-    contract = ActivityResultContracts.StartActivityForResult()
-) { result ->
-    val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-    task.addOnCompleteListener { completedTask ->
-        if (completedTask.isSuccessful) {
-            val account = completedTask.result
-            val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
-            auth.signInWithCredential(credential).addOnCompleteListener { authTask ->
-                onLoginSuccess()
-            }
-        } else {
-            // Handle error, but still allow access
-            onLoginSuccess()
-        }
-    }
-}
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Iniciar Sesión") },
-                actions = {
-                    IconButton(onClick = { onThemeChange(!useDarkTheme) }) {
-                        Icon(
-                            imageVector = Icons.Filled.Face,
-                            contentDescription = "Cambiar Tema"
-                        )
+    val googleSignInLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+        task.addOnCompleteListener { completedTask ->
+            if (completedTask.isSuccessful) {
+                val account = completedTask.result
+                val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
+                auth.signInWithCredential(credential).addOnCompleteListener { authTask ->
+                    if (authTask.isSuccessful) {
+                        onLoginSuccess()
+                    } else {
+                        Log.e("LoginScreen", "Google sign-in failed: ${authTask.exception?.message}")
                     }
                 }
-            )
+            } else {
+                Log.e("LoginScreen", "Google sign-in failed: ${completedTask.exception?.message}")
+            }
         }
+    }
+
+    Scaffold(
+
     ) { padding ->
         Column(
             modifier = Modifier
@@ -90,32 +85,18 @@ fun LoginScreen(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.imageninicio),
-                contentDescription = "Imagen de Inicio",
+                contentDescription = "Imagen de inicio",
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(RoundedCornerShape(32.dp))
-
-
+                    .size(200.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.Gray),
+                contentScale = ContentScale.Crop
             )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            Text(
-                text = "Bienvenido",
-                style = MaterialTheme.typography.headlineMedium
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Correo Electrónico") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp)),
-                shape = RoundedCornerShape(16.dp)
+                label = { Text("Email") },
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -123,12 +104,9 @@ fun LoginScreen(
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Contraseña") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp)),
+                label = { Text("Password") },
                 visualTransformation = PasswordVisualTransformation(),
-                shape = RoundedCornerShape(16.dp)
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -141,49 +119,45 @@ fun LoginScreen(
                                 if (task.isSuccessful) {
                                     onLoginSuccess()
                                 } else {
-                                    // Handle error
+                                    Log.e("LoginScreen", "Email sign-in failed: ${task.exception?.message}")
                                 }
                             }
                     }
                 },
                 enabled = isValidCredentials,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Iniciar Sesión")
+                Text("Login")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón de Google con icono
             Button(
-                onClick = { googleSignInLauncher.launch(googleSignInClient.signInIntent) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp)),
+                onClick = {
+                    googleSignInClient.signOut().addOnCompleteListener {
+                        googleSignInLauncher.launch(googleSignInClient.signInIntent)
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.google),
                     contentDescription = "Google Icon",
-                    modifier = Modifier
-                        .size(24.dp)
-                        .align(Alignment.CenterVertically)
+                    modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Iniciar Sesión con Google",
-                    color = Color.Black,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                )
+                Text("Login with Google", color = Color.Black)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            TextButton(onClick = onRegisterClick) {
-                Text("Registrarse")
+            TextButton(
+                onClick = onRegisterClick,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Register")
             }
         }
     }

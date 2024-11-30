@@ -1,4 +1,4 @@
-package com.example.aplicacion
+package com.example.aplicacion.screens
 
 import android.location.Location
 import androidx.compose.foundation.layout.*
@@ -27,11 +27,7 @@ fun LocationScreen() {
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Real-Time Geolocation") }
-            )
-        }
+
     ) { padding ->
         Column(
             modifier = Modifier

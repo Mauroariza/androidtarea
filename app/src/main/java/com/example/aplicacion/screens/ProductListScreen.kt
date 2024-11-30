@@ -1,4 +1,4 @@
-package com.example.aplicacion
+package com.example.aplicacion.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -36,31 +35,7 @@ fun ProductListScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Listado de Productos") },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Atrás")
-                    }
-                },
-                actions = {
-                    IconButton(onClick = onCartClick) {
-                        BadgedBox(badge = {
-                            if (cartItemCount > 0) {
-                                Badge { Text(cartItemCount.toString()) }
-                            }
-                        }) {
-                            Icon(Icons.Filled.ShoppingCart, contentDescription = "Carrito")
-                        }
-                    }
-                    IconButton(onClick = { onThemeChange(!useDarkTheme) }) {
-                        Icon(
-                            imageVector = Icons.Filled.Face,
-                            contentDescription = "Cambiar Tema"
-                        )
-                    }
-                }
-            )
+
         }
     ) { padding ->
         LazyColumn(modifier = Modifier.padding(padding)) {

@@ -52,13 +52,14 @@ android {
 }
 
 dependencies {
-
-    // Firebase Authenticatio
-    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation(libs.androidx.material.icons.extended)
+    // Firebase BOM
+    implementation(platform(libs.firebase.bom))
+    // Firebase Authentication
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.analytics)
     // Google Sign-In
-    implementation("com.google.android.gms:play-services-auth")
-    implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
-    implementation("com.google.firebase:firebase-analytics")
+    implementation(libs.play.services.auth)
     implementation(libs.maps.compose)
     implementation(libs.play.services.location)
     implementation(libs.play.services.maps)
@@ -73,6 +74,9 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.core)
+    implementation(libs.androidx.ui.test.android)
+    implementation(libs.androidx.ui.test.android)
     // Remove the following line
     // implementation(libs.firebase.auth.common)
     testImplementation(libs.junit)

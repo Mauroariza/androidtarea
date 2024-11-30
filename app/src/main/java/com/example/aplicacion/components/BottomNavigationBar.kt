@@ -1,12 +1,13 @@
-package com.example.aplicacion
+package com.example.aplicacion.components
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
+import com.example.aplicacion.navigation.Screen
+
 @Composable
 fun LoggedOutBottomNavigationBar(navController: NavHostController) {
     val items = listOf(

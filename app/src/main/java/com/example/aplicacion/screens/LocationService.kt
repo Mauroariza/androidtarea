@@ -1,4 +1,4 @@
-package com.example.aplicacion
+package com.example.aplicacion.screens
 
 import android.Manifest
 import android.content.Context

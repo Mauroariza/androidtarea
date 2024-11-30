@@ -1,4 +1,4 @@
-package com.example.aplicacion
+package com.example.aplicacion.screens
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -19,10 +19,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-
 import android.util.Log
-
-
+import com.example.aplicacion.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,7 +39,7 @@ fun RegisterScreen(
 
     // Configurar Google Sign-In
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestIdToken("YOUR_WEB_CLIENT_ID") // Reemplaza con tu ID de cliente real
+        .requestIdToken("899728414342-kbl8rip7nfel92ini44itg1t8ivd4oak.apps.googleusercontent.com")
         .requestEmail()
         .build()
 
@@ -57,34 +55,19 @@ fun RegisterScreen(
                 val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
                 auth.signInWithCredential(credential).addOnCompleteListener { authTask ->
                     if (authTask.isSuccessful) {
-                        Log.d("RegisterScreen", "Firebase sign-in successful")
                         onRegisterSuccess()
                     } else {
-                        Log.e("RegisterScreen", "Firebase sign-in failed: ${authTask.exception?.message}")
-                        onRegisterSuccess() // Allow access even if Firebase sign-in fails
+                        // Handle error
                     }
                 }
             } else {
-                Log.e("RegisterScreen", "Google sign-in task failed: ${completedTask.exception?.message}")
-                onRegisterSuccess() // Allow access even if Google sign-in fails
+                // Handle error
             }
         }
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Registro de Clientes") },
-                actions = {
-                    IconButton(onClick = { onThemeChange(!useDarkTheme) }) {
-                        Icon(
-                            imageVector = Icons.Filled.Face,
-                            contentDescription = "Cambiar Tema"
-                        )
-                    }
-                }
-            )
-        }
+
     ) { padding ->
         Column(
             modifier = Modifier
@@ -116,39 +99,55 @@ fun RegisterScreen(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Contraseña") },
-                modifier = Modifier.fillMaxWidth(),
-                visualTransformation = PasswordVisualTransformation()
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = { /* Handle registration */ },
+                onClick = {
+                    if (isValidCredentials) {
+                        auth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    onRegisterSuccess()
+                                } else {
+                                    // Handle error
+                                }
+                            }
+                    }
+                },
                 enabled = isValidCredentials,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Registrar")
+                Text("Registrarse")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { googleSignInLauncher.launch(googleSignInClient.signInIntent) },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.google),
-                    contentDescription = "Google Icon",
-                    modifier = Modifier.size(24.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Registrar con Google",
-                    color = Color.Black
-                )
-            }
+    onClick = {
+        googleSignInClient.signOut().addOnCompleteListener {
+            googleSignInLauncher.launch(googleSignInClient.signInIntent)
+        }
+    },
+    modifier = Modifier.fillMaxWidth(),
+    colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+) {
+    Image(
+        painter = painterResource(id = R.drawable.google),
+        contentDescription = "Google Icon",
+        modifier = Modifier.size(24.dp)
+    )
+    Spacer(modifier = Modifier.width(8.dp))
+    Text("Registrarse con Google", color = Color.Black)
+}
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+
         }
     }
 }

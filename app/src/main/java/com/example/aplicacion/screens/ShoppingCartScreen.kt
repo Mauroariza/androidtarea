@@ -1,4 +1,4 @@
-package com.example.aplicacion
+package com.example.aplicacion.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -9,12 +9,12 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.example.aplicacion.models.CartItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,24 +27,7 @@ fun ShoppingCartScreen(
     useDarkTheme: Boolean
 ) {
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Carrito de Compras") },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Atrás")
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { onThemeChange(!useDarkTheme) }) {
-                        Icon(
-                            imageVector = Icons.Filled.Face,
-                            contentDescription = "Cambiar Tema"
-                        )
-                    }
-                }
-            )
-        }
+
     ) { padding ->
         Column(modifier = Modifier.padding(padding)) {
             LazyColumn(modifier = Modifier.weight(1f)) {
