@@ -40,6 +40,7 @@ fun RegisterScreen(
     // Configurar Google Sign-In
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestIdToken("899728414342-kbl8rip7nfel92ini44itg1t8ivd4oak.apps.googleusercontent.com")
+
         .requestEmail()
         .build()
 

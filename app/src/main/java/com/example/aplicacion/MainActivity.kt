@@ -20,17 +20,9 @@ import com.example.aplicacion.components.CommonTopAppBar
 import com.example.aplicacion.components.LoggedInBottomNavigationBar
 import com.example.aplicacion.components.LoggedOutBottomNavigationBar
 import com.example.aplicacion.models.CartItem
-import com.example.aplicacion.screens.LocationScreen
-import com.example.aplicacion.screens.LoginScreen
-import com.example.aplicacion.screens.MapScreen
-import com.example.aplicacion.screens.Product
-import com.example.aplicacion.screens.ProductListScreen
-import com.example.aplicacion.screens.ProfileScreen
-import com.example.aplicacion.viewmodel.ProfileViewModel
-import com.example.aplicacion.screens.RegisterScreen
-import com.example.aplicacion.screens.SettingsScreen
-import com.example.aplicacion.screens.ShoppingCartScreen
+import com.example.aplicacion.screens.*
 import com.example.aplicacion.ui.theme.AplicacionTheme
+import com.example.aplicacion.viewmodel.ProfileViewModel
 import com.example.aplicacion.viewmodel.SharedViewModel
 import com.google.android.gms.maps.model.LatLng
 
@@ -84,7 +76,7 @@ class MainActivity : ComponentActivity() {
                     content = { paddingValues: PaddingValues ->
                         NavHost(navController = navController, startDestination = "login", modifier = Modifier.padding(paddingValues)) {
                             composable("login") {
-                                sharedViewModel.updateTitle("Login")
+                                sharedViewModel.updateTitle("Iniciar Sesión")
                                 LoginScreen(
                                     onLoginSuccess = {
                                         isLoggedIn = true
@@ -130,8 +122,8 @@ class MainActivity : ComponentActivity() {
                                     onUpdateQuantity = { cartItem: CartItem, newQuantity: Int ->
                                         cartItems = cartItems.map {
                                             if (it.id == cartItem.id) it.copy(quantity = newQuantity) else it
-                                            }
-                                        },
+                                        }
+                                    },
                                     onThemeChange = { useDarkTheme = it },
                                     useDarkTheme = useDarkTheme
                                 )
